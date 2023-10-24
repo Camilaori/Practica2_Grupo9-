@@ -48,6 +48,53 @@ def postdirectories():
     db.session.commit()
     return jsonify(user.serialize())
 
+@app.route('/directories/<int:pk>', methods=['GET'])
+def get_directory(pk):
+    user = User.query.get(pk)
+    if user is None:
+        return jsonify({'message': 'directory not found'}), 404
+    return jsonify(user.serialize())
+
+@app.route('/directories/<int:pk>', methods=['PUT'])
+def update_directory(pk):
+    user = User.query.get(pk)
+    if user is None:
+        return jsonify({'message': 'Directory not found'}), 404
+
+    data = request.get_json()
+    user.name = data.get('name')
+    user.emails = data.get('emails')
+
+    db.session.commit()
+    return jsonify(user.serialize())
+
+@app.route('/directories/<int:pk>', methods=['PATCH'])
+def partial_update_directory(pk):
+    user = User.query.get(pk)
+    if user is None:
+        return jsonify({'message': 'Directory not found'}), 404
+
+    data = request.get_json()
+
+    if 'name' in data:
+        user.name = data['name']
+    if 'emails' in data:
+        user.emails = data['emails']
+
+    db.session.commit()
+
+    return jsonify(user.serialize())
+
+@app.route('/directories/<int:pk>', methods=['DELETE'])
+def delete_directory(pk):
+    user = User.query.get(pk)
+    if user is None:
+        return jsonify({'message': 'Directory no encontrado'}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({'message': 'Directory eliminado'})
 
 
 if __name__ == '__main__':

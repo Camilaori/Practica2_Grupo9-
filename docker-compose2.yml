@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+
+  postgres-db:
+    image: 'postgres:15.0-alpine'
+    container_name: postgres-db
+    environment:
+      POSTGRES_DB: delgado_gonzalez
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+      start_period: 30s
+
+
+  
+  flask_app:
+    image: camilaori/practica3
+    restart: always
+    ports:
+      - 8000:8000
+    container_name: flask_app_delgado_gonzalez
+    environment:
+      DB_URL: postgresql://postgres:postgres@postgres-db/delgado_gonzalez
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+        restart: true
+    
+
+volumes:
+  pgdata: {}
+
+
+

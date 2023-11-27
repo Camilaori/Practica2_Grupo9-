@@ -7,7 +7,7 @@ from sqlalchemy.orm import clear_mappers
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@postgres-db/delgado_gonzalez'
+app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
 
 db= SQLAlchemy(app)
 
